@@ -6,23 +6,9 @@ import PackageDescription
 let package = Package(
     name: "GitHistory",
     products: [
-        // Products define the executables and libraries a package produces, and make them visible to other packages.
-        .library(
-            name: "GitHistory",
-            targets: ["GitHistory"]),
-    ],
-    dependencies: [
-        // Dependencies declare other packages that this package depends on.
-        // .package(url: /* package url */, from: "1.0.0"),
+        .plugin(name: "GitHistory", targets: ["GitHistory"]),
     ],
     targets: [
-        // Targets are the basic building blocks of a package. A target can define a module or a test suite.
-        // Targets can depend on other targets in this package, and on products in packages this package depends on.
-        .target(
-            name: "GitHistory",
-            dependencies: []),
-        .testTarget(
-            name: "GitHistoryTests",
-            dependencies: ["GitHistory"]),
+        .plugin(name: "GitHistory", capability: .buildTool()),
     ]
 )
