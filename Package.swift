@@ -9,6 +9,14 @@ let package = Package(
         .plugin(name: "GitHistory", targets: ["GitHistory"]),
     ],
     targets: [
-        .plugin(name: "GitHistory", capability: .buildTool()),
+        .plugin(name: "GitHistory", capability: .command(intent: .custom(verb: "show-commit-history",
+                                                                         description: "Show last commit history"))
+               ),
+        .executableTarget(
+            name: "App",
+            plugins: [
+                .plugin(name: "GitHistory")
+            ]
+        ),
     ]
 )

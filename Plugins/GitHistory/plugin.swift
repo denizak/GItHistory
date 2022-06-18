@@ -1,15 +1,19 @@
 import Foundation
 import PackagePlugin
 
-@main struct GitHistory: BuildToolPlugin {
-    func createBuildCommands(context: PluginContext, target: Target) async throws -> [Command] {
-        let output = context.pluginWorkDirectory.appending([".history"])
-        return [
-            .prebuildCommand(displayName: "Last Git commit",
-                             executable: .init("/usr/bin/git"),
-                             arguments: [
-                                "log", "--oneline", "--format=\"%s\"", "-n 5"],
-                             outputFilesDirectory: output)
-        ]
+@main struct GitHistory: CommandPlugin {
+    func performCommand(context: PluginContext, arguments: [String]) async throws {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/git")
+        process.arguments = ["log", "--format=\"%s\""]
+
+        let outputPipe = Pipe()
+        process.standardOutput = outputPipe
+        try process.run()
+        process.waitUntilExit()
+
+        let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+        let output = String(decoding: outputData, as: UTF8.self)
+        print(output)
     }
 }
